@@ -4,14 +4,16 @@ import cors from 'cors';
 import { env } from './utils/env.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import cookieParser from 'cookie-parser';
 import router from './routers/index.js';
 const app = express();
 const PORT = Number(env('PORT', 3000));
 
 export const startServer = () => {
   app.use(pino({ transport: { target: 'pino-pretty' } }));
-  app.use(cors());
   app.use(express.json());
+  app.use(cors());
+  app.use(cookieParser());
 
   app.get('/', (req, res) => {
     res.json({ message: 'Hello  world' });
