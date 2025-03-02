@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import productsRouter from '../routers/products.js';
+import nearestStoreRouter from '../routers/nearestStore.js';
+import storeRouter from '../routers/stores.js';
+import reviewsRouter from '../routers/reviews.js';
+const router = Router();
+router.use('/api/products', productsRouter);
+router.use('/api/stores/nearest', nearestStoreRouter);
+router.use('/api/stores', storeRouter);
+router.use('/api/customer-reviews', reviewsRouter);
+export default router;
