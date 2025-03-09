@@ -7,6 +7,7 @@ const pharmaciesSchema = new Schema(
     city: { type: String, required: true },
     phone: { type: String, required: true },
     rating: { type: Number, required: true },
+    status: { type: String, required: true, enum: ['open', 'closed'] },
   },
   {
     timestamps: true,
