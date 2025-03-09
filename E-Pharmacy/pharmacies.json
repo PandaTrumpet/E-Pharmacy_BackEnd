@@ -13,7 +13,7 @@
     "city": "Kharkiv",
     "phone": "0572-58-22-12",
     "rating": 3,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Aesculap",
@@ -29,7 +29,7 @@
     "city": "Rivne",
     "phone": "0362-62-33-44",
     "rating": 3,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Med-Service",
@@ -45,7 +45,7 @@
     "city": "Ternopil",
     "phone": "0352-52-43-21",
     "rating": 3,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Pharmacy 24",
@@ -53,7 +53,7 @@
     "city": "Cherkasy",
     "phone": "0472-35-67-89",
     "rating": 4,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Good Medicines",
@@ -69,7 +69,7 @@
     "city": "Vinnytsia",
     "phone": "0432-65-88-99",
     "rating": 4,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Pharmacy Plus",
@@ -85,7 +85,7 @@
     "city": "Mykolaiv",
     "phone": "0512-47-58-69",
     "rating": 2,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Pharmaland",
@@ -101,7 +101,7 @@
     "city": "Chernihiv",
     "phone": "0462-67-89-90",
     "rating": 5,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Good Day Pharmacy",
@@ -117,7 +117,7 @@
     "city": "Uzhhorod",
     "phone": "0312-61-62-63",
     "rating": 3,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Panacea",
@@ -149,7 +149,7 @@
     "city": "Kyiv",
     "phone": "044-501-36-86",
     "rating": 3,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Vitafarm",

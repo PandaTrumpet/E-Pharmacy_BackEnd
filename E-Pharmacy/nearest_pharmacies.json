@@ -13,7 +13,7 @@
     "city": "Kyiv",
     "phone": "045-416-3199",
     "rating": 1,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Bright Health Pharmacy",
@@ -29,7 +29,7 @@
     "city": "Kyiv",
     "phone": "045-403-6079",
     "rating": 1,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Green Cross Pharmacy",
@@ -45,7 +45,7 @@
     "city": "Kyiv",
     "phone": "050-381-2329",
     "rating": 5,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Green Cross Pharmacy",
@@ -61,7 +61,7 @@
     "city": "Kyiv",
     "phone": "048-947-8907",
     "rating": 4,
-    "status": "closed"
+    "status": "close"
   },
   {
     "name": "Healthline Chemists",
