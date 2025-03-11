@@ -12,7 +12,15 @@ const PORT = Number(env('PORT', 3000));
 export const startServer = () => {
   app.use(pino({ transport: { target: 'pino-pretty' } }));
   app.use(express.json());
-  app.use(cors());
+  // app.use(cors());
+  app.use(
+    cors({
+      origin: 'http://localhost:5173', // Разрешаем запросы только с этого фронта
+      credentials: true, // Разрешаем отправку `cookies`
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Разрешенные методы
+      allowedHeaders: ['Content-Type', 'Authorization'], // Разрешенные заголовки
+    }),
+  );
   app.use(cookieParser());
 
   app.get('/', (req, res) => {

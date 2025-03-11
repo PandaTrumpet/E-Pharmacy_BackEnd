@@ -2,13 +2,17 @@ import createHttpError from 'http-errors';
 import { getAllProducts, getProdunctById } from '../services/products.js';
 
 // export const getProductsController = async (req, res, next) => {
-//   // Извлекаем параметр name из query, если он есть
-//   const { name } = req.query;
+//   const { name, category } = req.query;
 //   let filter = {};
 
 //   if (name) {
-//     // Используем регулярное выражение для поиска по названию (без учета регистра)
+//     // Поиск по названию (без учета регистра)
 //     filter.name = new RegExp(name, 'i');
+//   }
+
+//   if (category) {
+//     // Фильтрация по точному совпадению категории
+//     filter.category = category;
 //   }
 
 //   const products = await getAllProducts(filter);
@@ -23,24 +27,29 @@ import { getAllProducts, getProdunctById } from '../services/products.js';
 //     data: products,
 //   });
 // };
-
 export const getProductsController = async (req, res, next) => {
-  const { name, category } = req.query;
+  const { name, category, page = 1, limit = 10 } = req.query;
+
   let filter = {};
 
   if (name) {
-    // Поиск по названию (без учета регистра)
     filter.name = new RegExp(name, 'i');
   }
 
   if (category) {
-    // Фильтрация по точному совпадению категории
     filter.category = category;
   }
 
-  const products = await getAllProducts(filter);
+  const parsedPage = parseInt(page, 10) || 1;
+  const parsedLimit = parseInt(limit, 10) || 10;
 
-  if (!products || products.length === 0) {
+  const { products, totalProducts } = await getAllProducts(
+    filter,
+    parsedPage,
+    parsedLimit,
+  );
+
+  if (!products.length) {
     throw createHttpError(404, 'Products not found');
   }
 
@@ -48,9 +57,13 @@ export const getProductsController = async (req, res, next) => {
     status: 200,
     message: 'Successfully found products!',
     data: products,
+    pagination: {
+      currentPage: parsedPage,
+      totalPages: Math.ceil(totalProducts / parsedLimit),
+      totalProducts,
+    },
   });
 };
-
 export const getProductByIdController = async (req, res) => {
   const { productId } = req.params;
   if (!productId) {
