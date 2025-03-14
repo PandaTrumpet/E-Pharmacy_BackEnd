@@ -104,10 +104,31 @@ export const upsertOrdersProductsController = async (req, res, next) => {
 //     next(error);
 //   }
 // };
+// export const getUserOrdersController = async (req, res, next) => {
+//   const { _id: userId } = req.user; // Получаем userId из запроса
+
+//   const orders = await getAllOrderProducts(userId); // Находим заказы
+//   if (!orders) return next(createHttpError(404, 'Orders not found'));
+//   res.status(200).json({
+//     status: 200,
+//     message: 'Orders retrieved successfully',
+//     data: orders,
+//   });
+// };
+
 export const getUserOrdersController = async (req, res, next) => {
   const { _id: userId } = req.user; // Получаем userId из запроса
 
   const orders = await getAllOrderProducts(userId); // Находим заказы
+
+  // Если заказов нет, отправляем ответ с пустым массивом
+  if (!orders || orders.length === 0) {
+    return res.status(200).json({
+      status: 200,
+      message: 'No orders found for this user',
+      data: [],
+    });
+  }
 
   res.status(200).json({
     status: 200,

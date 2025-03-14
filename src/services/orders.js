@@ -480,7 +480,8 @@ export const getAllOrderProducts = async (userId) => {
       .exec();
 
     if (!orders || orders.length === 0) {
-      throw new Error('No orders found for this user');
+      // throw new Error('No orders found for this user');
+      return;
     }
 
     return orders;

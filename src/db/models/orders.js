@@ -47,14 +47,16 @@ const ordersSchema = new Schema(
 
     productsCount: {
       type: Number,
-      default: 0,
-      min: 0,
+      // default: 0,
+      // min: 0,
     },
-
+    totalProducts: {
+      type: Number,
+    },
     totalPrice: {
       type: Number,
-      default: 0,
-      min: 0,
+      // default: 0,
+      // min: 0,
     },
 
     paymentMethod: {
