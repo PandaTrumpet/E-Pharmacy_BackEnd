@@ -250,80 +250,180 @@ export const checkoutOrders = async (userId, payload) => {
 //     isNew: Boolean(result?.lastErrorObject?.upserted),
 //   };
 // };
-export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
-  // Проверяем, что каждый объект в ordersProduct содержит _id
-  // if (!payload.ordersProduct.every((prod) => prod._id)) {
-  //   throw new Error(
-  //     'Каждый объект в ordersProduct должен содержать _id продукта',
-  //   );
-  // }
+// export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
+//   // Проверяем, что каждый объект в ordersProduct содержит _id
+//   // if (!payload.ordersProduct.every((prod) => prod._id)) {
+//   //   throw new Error(
+//   //     'Каждый объект в ordersProduct должен содержать _id продукта',
+//   //   );
+//   // }
 
+//   const filter = orderId ? { _id: orderId } : {};
+
+//   // Pipeline обновления
+//   const updatePipeline = [
+//     // 1-й этап: обновляем массив ordersProduct с использованием $reduce
+//     {
+//       $set: {
+//         ordersProduct: {
+//           $reduce: {
+//             input: payload.ordersProduct,
+//             // Начальное значение – существующий массив или пустой массив, если его нет
+//             initialValue: { $ifNull: ['$ordersProduct', []] },
+//             in: {
+//               $let: {
+//                 vars: { newProd: '$$this' },
+//                 in: {
+//                   $cond: [
+//                     // Если в массиве уже есть элемент с таким же _id
+//                     {
+//                       $gt: [
+//                         {
+//                           $size: {
+//                             $filter: {
+//                               input: '$$value',
+//                               as: 'prod',
+//                               cond: { $eq: ['$$prod._id', '$$newProd._id'] },
+//                             },
+//                           },
+//                         },
+//                         0,
+//                       ],
+//                     },
+//                     // Тогда обновляем найденный элемент, заменяя quantity на новое значение
+//                     {
+//                       $map: {
+//                         input: '$$value',
+//                         as: 'prod',
+//                         in: {
+//                           $cond: [
+//                             { $eq: ['$$prod._id', '$$newProd._id'] },
+//                             {
+//                               $mergeObjects: [
+//                                 '$$prod',
+//                                 { quantity: '$$newProd.quantity' },
+//                               ],
+//                             },
+//                             '$$prod',
+//                           ],
+//                         },
+//                       },
+//                     },
+//                     // Если элемента с таким _id нет, то добавляем новый продукт к массиву
+//                     { $concatArrays: ['$$value', ['$$newProd']] },
+//                   ],
+//                 },
+//               },
+//             },
+//           },
+//         },
+//       },
+//     },
+//     // 2-й этап: обновляем общие поля заказа
+//     {
+//       $set: {
+//         paymentMethod: payload.paymentMethod,
+//         name: payload.name, // Обновляем поле name
+//         userId: payload.userId,
+//         email: payload.email,
+//         phone: payload.phone,
+//         address: payload.address,
+//         order_date: { $ifNull: ['$order_date', new Date()] },
+//       },
+//     },
+//     // 3-й этап: пересчитываем итоговые значения totalPrice и productsCount
+//     {
+//       $set: {
+//         totalPrice: {
+//           $sum: {
+//             $map: {
+//               input: '$ordersProduct',
+//               as: 'prod',
+//               in: { $multiply: ['$$prod.price', '$$prod.quantity'] },
+//             },
+//           },
+//         },
+//         productsCount: {
+//           $sum: {
+//             $map: {
+//               input: '$ordersProduct',
+//               as: 'prod',
+//               in: '$$prod.quantity',
+//             },
+//           },
+//         },
+//       },
+//     },
+//   ];
+
+//   const result = await OrdersCollection.findOneAndUpdate(
+//     filter,
+//     updatePipeline,
+//     { new: true, upsert: true, ...options },
+//   );
+
+//   if (!result) return null;
+
+//   return {
+//     orders: result,
+//     isNew: Boolean(result?.lastErrorObject?.upserted),
+//   };
+// };
+
+export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
+  const productId = payload.ordersProduct[0]._id;
   const filter = orderId ? { _id: orderId } : {};
 
-  // Pipeline обновления
   const updatePipeline = [
-    // 1-й этап: обновляем массив ordersProduct с использованием $reduce
     {
       $set: {
         ordersProduct: {
-          $reduce: {
-            input: payload.ordersProduct,
-            // Начальное значение – существующий массив или пустой массив, если его нет
-            initialValue: { $ifNull: ['$ordersProduct', []] },
-            in: {
-              $let: {
-                vars: { newProd: '$$this' },
+          $cond: {
+            if: {
+              $gt: [
+                {
+                  $size: {
+                    $filter: {
+                      input: { $ifNull: ['$ordersProduct', []] },
+                      cond: { $eq: ['$$this._id', productId] },
+                    },
+                  },
+                },
+                0,
+              ],
+            },
+            then: {
+              $map: {
+                input: { $ifNull: ['$ordersProduct', []] },
+                as: 'prod',
                 in: {
-                  $cond: [
-                    // Если в массиве уже есть элемент с таким же _id
-                    {
-                      $gt: [
-                        {
-                          $size: {
-                            $filter: {
-                              input: '$$value',
-                              as: 'prod',
-                              cond: { $eq: ['$$prod._id', '$$newProd._id'] },
-                            },
-                          },
-                        },
-                        0,
+                  $cond: {
+                    if: { $eq: ['$$prod._id', productId] },
+                    then: {
+                      $mergeObjects: [
+                        '$$prod',
+                        { quantity: payload.ordersProduct[0].quantity }, // заменяем количество
                       ],
                     },
-                    // Тогда обновляем найденный элемент, заменяя quantity на новое значение
-                    {
-                      $map: {
-                        input: '$$value',
-                        as: 'prod',
-                        in: {
-                          $cond: [
-                            { $eq: ['$$prod._id', '$$newProd._id'] },
-                            {
-                              $mergeObjects: [
-                                '$$prod',
-                                { quantity: '$$newProd.quantity' },
-                              ],
-                            },
-                            '$$prod',
-                          ],
-                        },
-                      },
-                    },
-                    // Если элемента с таким _id нет, то добавляем новый продукт к массиву
-                    { $concatArrays: ['$$value', ['$$newProd']] },
-                  ],
+                    else: '$$prod',
+                  },
                 },
               },
+            },
+            else: {
+              $concatArrays: [
+                { $ifNull: ['$ordersProduct', []] },
+                payload.ordersProduct,
+              ],
             },
           },
         },
       },
     },
-    // 2-й этап: обновляем общие поля заказа
     {
       $set: {
-        paymentMethod: payload.paymentMethod,
-        name: payload.name, // Обновляем поле name
+        name: payload.name,
+
         userId: payload.userId,
         email: payload.email,
         phone: payload.phone,
@@ -331,7 +431,6 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
         order_date: { $ifNull: ['$order_date', new Date()] },
       },
     },
-    // 3-й этап: пересчитываем итоговые значения totalPrice и productsCount
     {
       $set: {
         totalPrice: {
@@ -359,7 +458,11 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
   const result = await OrdersCollection.findOneAndUpdate(
     filter,
     updatePipeline,
-    { new: true, upsert: true, ...options },
+    {
+      new: true,
+      upsert: true,
+      ...options,
+    },
   );
 
   if (!result) return null;
