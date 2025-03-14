@@ -1,19 +1,19 @@
 import { Router } from 'express';
 import {
   checkoutOrdersController,
-  getOrderProductsController,
-  // upsertOrdersProductsController,
+  getUserOrdersController,
+  upsertOrdersProductsController,
 } from '../controllers/orders.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { authenticate } from '../middlewares/authenticate.js';
-import { upsertCartsController } from '../controllers/carts.js';
+
 const router = Router();
 router.post('/checkout', authenticate, ctrlWrapper(checkoutOrdersController));
 router.put(
   '/update',
   authenticate,
   // ctrlWrapper(upsertOrdersProductsController),
-  ctrlWrapper(upsertCartsController),
+  ctrlWrapper(upsertOrdersProductsController),
 );
-router.get('/cart', authenticate, ctrlWrapper(getOrderProductsController));
+router.get('/', authenticate, ctrlWrapper(getUserOrdersController));
 export default router;
