@@ -252,11 +252,11 @@ export const checkoutOrders = async (userId, payload) => {
 // };
 export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
   // Проверяем, что каждый объект в ordersProduct содержит _id
-  if (!payload.ordersProduct.every((prod) => prod._id)) {
-    throw new Error(
-      'Каждый объект в ordersProduct должен содержать _id продукта',
-    );
-  }
+  // if (!payload.ordersProduct.every((prod) => prod._id)) {
+  //   throw new Error(
+  //     'Каждый объект в ordersProduct должен содержать _id продукта',
+  //   );
+  // }
 
   const filter = orderId ? { _id: orderId } : {};
 
@@ -322,6 +322,8 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
     // 2-й этап: обновляем общие поля заказа
     {
       $set: {
+        paymentMethod: payload.paymentMethod,
+        name: payload.name, // Обновляем поле name
         userId: payload.userId,
         email: payload.email,
         phone: payload.phone,
