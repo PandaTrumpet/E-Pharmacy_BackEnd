@@ -1,6 +1,7 @@
 import createHttpError from 'http-errors';
 import {
   checkoutOrders,
+  deleteOrder,
   getAllOrderProducts,
   upsertOrdersProducts,
 } from '../services/orders.js';
@@ -135,4 +136,27 @@ export const getUserOrdersController = async (req, res, next) => {
     message: 'Orders retrieved successfully',
     data: orders,
   });
+};
+
+// export const deletOrderController = async (req, res, next) => {
+//   // const { _id: orderId } = req.params; // Получаем orderId из параметров запрос
+//   const { _id: orderId } = req.body;
+//   await deleteOrder(orderId); // Удаляем заказ
+//   res.status(204).json({
+//     message: 'Successfull delete',
+//   });
+// };
+export const deletOrderController = async (req, res, next) => {
+  const { _id: orderId } = req.body;
+  console.log(req.body);
+
+  if (!orderId) {
+    return res.status(400).json({ message: 'OrderId is required' });
+  }
+  const result = await deleteOrder(orderId);
+  if (!result) {
+    return res.status(404).json({ message: 'Order not found' });
+  }
+  // 204 означает "No Content". Если хотите отправить сообщение, используйте 200.
+  res.status(204).end();
 };

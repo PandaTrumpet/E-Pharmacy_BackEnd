@@ -869,3 +869,15 @@ export const getAllOrderProducts = async (userId) => {
     throw error;
   }
 };
+
+// export const deleteOrder = async (orderId) => {
+//   const result = await OrdersCollection.findOneAndDelete({ _id: orderId });
+//   return result;
+// };
+
+export const deleteOrder = async (orderId) => {
+  // const id = mongoose.Types.ObjectId(orderId);
+
+  const result = await OrdersCollection.findOneAndDelete({ _id: orderId });
+  return result;
+};

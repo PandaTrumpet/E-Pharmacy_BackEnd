@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   checkoutOrdersController,
+  deletOrderController,
   getUserOrdersController,
   upsertOrdersProductsController,
 } from '../controllers/orders.js';
@@ -16,4 +17,5 @@ router.put(
   ctrlWrapper(upsertOrdersProductsController),
 );
 router.get('/', authenticate, ctrlWrapper(getUserOrdersController));
+router.post('/delete', authenticate, ctrlWrapper(deletOrderController));
 export default router;
