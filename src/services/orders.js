@@ -852,16 +852,17 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
   };
 };
 
-export const getAllOrderProducts = async (userId) => {
+export const getAllOrderProducts = async (orderId) => {
   try {
-    const orders = await OrdersCollection.find({ userId }) // Ищем заказы по userId
-      .populate('userId', 'name email phone') // Загружаем данные пользователя
-      .exec();
+    const orders = await OrdersCollection.findById(orderId); // Ищем заказы по userId
+    // .populate('userId', 'name email phone') // Загружаем данные пользователя
+    // .exec();
+    // console.log(orderId);
 
-    if (!orders || orders.length === 0) {
-      // throw new Error('No orders found for this user');
-      return;
-    }
+    // if (!orders || orders.length === 0) {
+    //   // throw new Error('No orders found for this user');
+    //   return;
+    // }
 
     return orders;
   } catch (error) {
