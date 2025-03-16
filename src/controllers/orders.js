@@ -148,7 +148,7 @@ export const getUserOrdersController = async (req, res, next) => {
 // };
 export const deletOrderController = async (req, res, next) => {
   const { _id: orderId } = req.body;
-  console.log(req.body);
+  console.log(orderId);
 
   if (!orderId) {
     return res.status(400).json({ message: 'OrderId is required' });
