@@ -7,9 +7,16 @@ import {
 } from '../controllers/orders.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { orderValidationSchema } from '../validation/order.js';
 
 const router = Router();
-router.post('/checkout', authenticate, ctrlWrapper(checkoutOrdersController));
+router.post(
+  '/checkout',
+  authenticate,
+  validateBody(orderValidationSchema),
+  ctrlWrapper(checkoutOrdersController),
+);
 router.put(
   '/update',
   authenticate,
