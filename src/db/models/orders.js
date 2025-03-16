@@ -5,7 +5,6 @@ const ordersSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'customers',
-      // required: true,
     },
 
     name: {
@@ -48,16 +47,12 @@ const ordersSchema = new Schema(
 
     productsCount: {
       type: Number,
-      // default: 0,
-      // min: 0,
     },
     totalProducts: {
       type: Number,
     },
     totalPrice: {
       type: Number,
-      // default: 0,
-      // min: 0,
     },
 
     paymentMethod: {

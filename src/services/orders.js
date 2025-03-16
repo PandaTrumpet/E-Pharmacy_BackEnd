@@ -12,12 +12,10 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
     : { userId: payload.userId, status: 'Pending' };
 
   const updatePipeline = [
-    // Stage 1: Обновляем/сохраняем продукты, которые уже были в заказе
     {
       $set: {
         ordersProduct: {
           $concatArrays: [
-            // Сначала обновляем продукты, сохраняя их порядок
             {
               $filter: {
                 input: {
@@ -48,15 +46,15 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
                         in: {
                           $cond: [
                             { $gt: ['$$upd', null] },
-                            // Если найдено обновление:
+
                             {
                               $cond: [
                                 { $eq: ['$$upd.remove', true] },
-                                null, // если надо удалить – возвращаем null
-                                '$$upd', // иначе возвращаем обновлённый объект
+                                null,
+                                '$$upd',
                               ],
                             },
-                            // Если обновление не найдено – оставляем исходный объект
+
                             '$$prod',
                           ],
                         },
@@ -68,7 +66,7 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
                 cond: { $ne: ['$$item', null] },
               },
             },
-            // Stage 2: Добавляем новые продукты, которых нет в исходном массиве
+
             {
               $filter: {
                 input: { $literal: payload.ordersProduct },
@@ -93,7 +91,7 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
         },
       },
     },
-    // Stage 3: Обновляем контактные/доставочные данные заказа
+
     {
       $set: {
         name: payload.name,
@@ -104,7 +102,7 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
         order_date: { $ifNull: ['$order_date', new Date()] },
       },
     },
-    // Stage 4: Пересчитываем итоговые значения заказа
+
     {
       $set: {
         totalPrice: {
@@ -149,12 +147,11 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
 
 export const getAllOrderProducts = async (userId) => {
   try {
-    const orders = await OrdersCollection.find({ userId }) // Ищем заказы по userId
-      .populate('userId', 'name email phone') // Загружаем данные пользователя
+    const orders = await OrdersCollection.find({ userId })
+      .populate('userId', 'name email phone')
       .exec();
 
     if (!orders || orders.length === 0) {
-      // throw new Error('No orders found for this user');
       return;
     }
 
@@ -165,14 +162,7 @@ export const getAllOrderProducts = async (userId) => {
   }
 };
 
-// export const deleteOrder = async (orderId) => {
-//   const result = await OrdersCollection.findOneAndDelete({ _id: orderId });
-//   return result;
-// };
-
 export const deleteOrder = async (orderId) => {
-  // const id = mongoose.Types.ObjectId(orderId);
-
   const result = await OrdersCollection.findOneAndDelete({ _id: orderId });
   return result;
 };

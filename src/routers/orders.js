@@ -13,7 +13,7 @@ router.post('/checkout', authenticate, ctrlWrapper(checkoutOrdersController));
 router.put(
   '/update',
   authenticate,
-  // ctrlWrapper(upsertOrdersProductsController),
+
   ctrlWrapper(upsertOrdersProductsController),
 );
 router.get('/', authenticate, ctrlWrapper(getUserOrdersController));

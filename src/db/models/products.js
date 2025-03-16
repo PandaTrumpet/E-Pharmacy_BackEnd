@@ -6,13 +6,12 @@ const productsSchema = new Schema(
     photo: { type: String, required: true },
     suppliers: {
       type: String,
-      // required: true
     },
     quantity: {
       type: Number,
       required: true,
     },
-    // stock: { type: String, required: true },
+
     price: { type: Number, required: true },
     category: {
       type: String,

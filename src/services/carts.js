@@ -5,17 +5,15 @@ export const updateCarts = async (cartId, payload) => {
     let cart;
 
     if (!cartId) {
-      // Если ID корзины нет, создаем новую и добавляем объект товара
       cart = await CartCollection.create({ cartOrder: [payload] });
       return {
         cart,
         isNew: true,
       };
     } else {
-      // Добавляем новый объект товара в cartOrder (не заменяем массив!)
       cart = await CartCollection.findByIdAndUpdate(
         cartId,
-        { $push: { cartOrder: payload } }, // Теперь добавляем **сам объект товара**, а не ID
+        { $push: { cartOrder: payload } },
         { new: true, upsert: true },
       );
 
@@ -23,7 +21,7 @@ export const updateCarts = async (cartId, payload) => {
 
       return {
         cart,
-        isNew: false, // Корзина обновлена
+        isNew: false,
       };
     }
   } catch (error) {
