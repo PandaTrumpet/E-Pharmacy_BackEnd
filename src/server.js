@@ -15,12 +15,15 @@ export const startServer = () => {
 
   app.use(
     cors({
-      origin: 'http://localhost:5173',
+      origin: (origin, callback) => {
+        callback(null, true);
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization'],
     }),
   );
+
   app.use(cookieParser());
 
   app.get('/', (req, res) => {
