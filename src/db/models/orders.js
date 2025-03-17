@@ -25,7 +25,7 @@ const ordersSchema = new Schema(
         suppliers: { type: String, required: true, trim: true },
         quantity: { type: Number, required: true, min: 1 },
         price: { type: Number, required: true, min: 0 },
-        remove: { type: Boolean },
+        isRemoved: { type: Boolean },
         category: {
           type: String,
           required: true,

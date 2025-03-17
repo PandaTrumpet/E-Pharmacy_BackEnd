@@ -49,7 +49,7 @@ export const upsertOrdersProducts = async (orderId, payload, options = {}) => {
 
                             {
                               $cond: [
-                                { $eq: ['$$upd.remove', true] },
+                                { $eq: ['$$upd.isRemoved', true] },
                                 null,
                                 '$$upd',
                               ],
